@@ -451,8 +451,13 @@ export class SnakeGameComponent implements OnInit, OnDestroy {
   }
 
   private loadHighScore() {
-    const saved = localStorage.getItem('snake-high-score');
-    this.highScore = saved ? parseInt(saved) : 0;
+    try {
+      const saved = localStorage.getItem('snake-high-score');
+      this.highScore = saved ? parseInt(saved) : 0;
+    } catch (error) {
+      console.error('Error loading high score:', error);
+      this.highScore = 0;
+    }
   }
 
   private saveHighScore() {
