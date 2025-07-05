@@ -1,0 +1,35 @@
+{
+  "name": "Cyber Snake - Modern Snake Game",
+  "short_name": "Cyber Snake",
+  "description": "A modern reinterpretation of the classic Snake game with cyber aesthetics",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png", 
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#00ff41",
+  "background_color": "#0f0f23",
+  "display": "standalone",
+  "orientation": "landscape-primary",
+  "start_url": "/",
+  "scope": "/",
+  "categories": ["games", "entertainment"],
+  "lang": "es"
+} 
