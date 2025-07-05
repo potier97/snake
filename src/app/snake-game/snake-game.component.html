@@ -1,0 +1,150 @@
+<!-- Contenedor principal con diseño moderno -->
+<div class="min-h-screen flex items-center justify-center p-4 lg:p-8">
+  <div class="w-full max-w-6xl">
+    
+    <!-- Título del juego -->
+    <div class="text-center mb-8 animate-slide-in">
+      <h1 class="game-title mb-4">🐍 CYBER SNAKE</h1>
+      <div class="flex justify-center">
+        <div class="status-indicator status-pulse"
+             [ngClass]="{
+               'ready': gameState === GameState.Ready,
+               'playing': gameState === GameState.Playing,
+               'paused': gameState === GameState.Paused,
+               'game-over': gameState === GameState.GameOver
+             }">
+          {{ gameState === GameState.Ready ? '🎮 LISTO' : 
+             gameState === GameState.Playing ? '⚡ JUGANDO' :
+             gameState === GameState.Paused ? '⏸️ PAUSADO' : '💀 GAME OVER' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout responsive para pantallas grandes -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      
+      <!-- Panel izquierdo - Estadísticas -->
+      <div class="lg:order-1 order-2">
+        <div class="game-panel info-glass relative">
+          <h3 class="text-xl font-bold text-game-accent mb-6 text-center">📊 ESTADÍSTICAS</h3>
+          
+          <div class="space-y-6">
+            <div class="text-center">
+              <div class="text-sm text-gray-400 mb-1">PUNTUACIÓN</div>
+              <div class="score-display stat-counter text-3xl">{{ score }}</div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div class="text-center">
+                <div class="text-xs text-gray-400 mb-1">NIVEL</div>
+                <div class="text-xl font-bold text-game-secondary">{{ level }}</div>
+              </div>
+              <div class="text-center">
+                <div class="text-xs text-gray-400 mb-1">RÉCORD</div>
+                <div class="text-xl font-bold text-yellow-400">{{ highScore }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel central - Canvas del juego -->
+      <div class="lg:order-2 order-1">
+        <div class="canvas-container">
+          <canvas id="gameCanvas" class="w-full h-auto"></canvas>
+          
+          <!-- Overlay de mensajes -->
+          <div class="game-overlay absolute inset-0 flex items-center justify-center" 
+               *ngIf="gameState !== GameState.Playing">
+            <div class="overlay-content text-center max-w-md px-6">
+              
+              <!-- Estado Ready -->
+              <div *ngIf="gameState === GameState.Ready" class="animate-slide-in">
+                <h2 class="text-4xl font-black text-game-accent mb-4">🚀 ¡LISTO!</h2>
+                <p class="text-lg text-gray-300 mb-6">Presiona <kbd class="px-2 py-1 bg-gray-700 rounded text-game-accent">ESPACIO</kbd> para comenzar</p>
+                <div class="text-sm text-gray-400">
+                    <p>Usa ⌨️ <strong>↑↓←→</strong> o <strong>WASD</strong> para moverte</p>
+                  <p>Mantén presionado para 🚀 <strong>modo turbo</strong></p>
+                </div>
+              </div>
+              
+              <!-- Estado Game Over -->
+              <div *ngIf="gameState === GameState.GameOver" class="animate-slide-in">
+                <h2 class="game-over-title text-4xl font-black mb-4" 
+                    [ngClass]="{'new-record': score === highScore}">
+                  {{ score === highScore ? '🏆 ¡NUEVO RÉCORD!' : '💀 GAME OVER' }}
+                </h2>
+                <div class="bg-transparent border border-game-accent/30 rounded-lg p-4 mb-6">
+                  <p class="text-2xl font-bold text-game-accent mb-2">{{ score }} puntos</p>
+                  <p class="text-sm text-gray-400">Nivel alcanzado: {{ level }}</p>
+                </div>
+                <button (click)="restartGame()" 
+                        class="btn-game btn-neon interactive-element">
+                  🎮 JUGAR DE NUEVO
+                </button>
+              </div>
+              
+              <!-- Estado Paused -->
+              <div *ngIf="gameState === GameState.Paused" class="animate-slide-in">
+                <h2 class="text-4xl font-black text-yellow-400 mb-4">⏸️ PAUSADO</h2>
+                <p class="text-lg text-gray-300">Presiona <kbd class="px-2 py-1 bg-gray-700 rounded text-yellow-400">ESPACIO</kbd> para continuar</p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel derecho - Controles -->
+      <div class="lg:order-3 order-3">
+        <div class="game-panel info-glass relative">
+          <h3 class="text-xl font-bold text-game-accent mb-6 text-center">🎮 CONTROLES</h3>
+          
+          <!-- Botones de control -->
+          <div class="space-y-4 mb-6">
+            <button 
+              (click)="gameState === GameState.GameOver ? restartGame() : startGame()" 
+              [disabled]="gameState === GameState.Playing"
+              class="btn-game btn-neon interactive-element w-full disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ gameState === GameState.GameOver ? '🔄 REINICIAR' : '🚀 COMENZAR' }}
+            </button>
+            
+            <button 
+              (click)="togglePause()" 
+              [disabled]="gameState === GameState.Ready || gameState === GameState.GameOver"
+              class="btn-game btn-neon interactive-element w-full disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ gameState === GameState.Paused ? '▶️ CONTINUAR' : '⏸️ PAUSAR' }}
+            </button>
+          </div>
+          
+          <!-- Guía de controles -->
+          <div class="space-y-3 text-sm">
+            <div class="control-hint flex items-center justify-between">
+              <span>Movimiento</span>
+              <span>↑↓←→ / WASD</span>
+            </div>
+            <div class="control-hint flex items-center justify-between">
+              <span>Turbo</span>
+              <span>Mantener tecla</span>
+            </div>
+            <div class="control-hint flex items-center justify-between">
+              <span>Pausa/Iniciar</span>
+              <span>ESPACIO</span>
+            </div>
+          </div>
+          
+          <!-- Info adicional -->
+          <div class="mt-6 p-3 bg-game-accent/10 rounded-lg border border-game-accent/30">
+            <div class="text-xs text-game-accent font-bold mb-2">💡 CONSEJOS:</div>
+            <div class="text-xs text-gray-300 space-y-1">
+              <p>• El tablero es infinito</p>
+              <p>• Velocidad aumenta cada nivel</p>
+              <p>• Usa turbo estratégicamente</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div> 

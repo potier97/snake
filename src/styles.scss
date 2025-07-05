@@ -1,0 +1,252 @@
+// Importar Tailwind CSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Importar Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+// Variables SCSS personalizadas
+$primary-green: #00ff41;
+$secondary-pink: #ff0080;
+$dark-bg: #0f0f23;
+$surface-bg: #1a1a2e;
+$border-color: #16213e;
+
+// Reset y estilos base
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Orbitron', monospace;
+}
+
+body {
+  @apply bg-gradient-game;
+  @apply text-white;
+  @apply min-h-screen;
+  @apply flex;
+  @apply justify-center;
+  @apply items-center;
+  position: relative;
+  
+  // Efecto de partículas de fondo
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// Componentes personalizados usando @apply
+@layer components {
+  .btn-game {
+    @apply inline-flex;
+    @apply items-center;
+    @apply justify-center;
+    @apply px-6;
+    @apply py-3;
+    @apply text-sm;
+    @apply font-bold;
+    @apply text-black;
+    @apply bg-gradient-button;
+    @apply border-2;
+    @apply border-game-accent;
+    @apply rounded-lg;
+    @apply shadow-lg;
+    @apply transition-all;
+    @apply duration-300;
+    @apply hover:scale-105;
+    @apply hover:shadow-xl;
+    @apply focus:outline-none;
+    @apply focus:ring-4;
+    @apply focus:ring-game-accent/50;
+    @apply active:scale-95;
+    
+    &:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    }
+  }
+
+  .game-panel {
+    @apply bg-game-surface/80;
+    @apply backdrop-blur-md;
+    @apply border;
+    @apply border-game-border;
+    @apply rounded-2xl;
+    @apply shadow-2xl;
+    @apply p-6;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(45deg, $primary-green, $secondary-pink, $primary-green);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: xor;
+      opacity: 0.3;
+    }
+  }
+
+  .score-display {
+    @apply text-2xl;
+    @apply font-black;
+    @apply text-game-accent;
+    @apply animate-glow;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .game-title {
+    @apply text-4xl;
+    @apply md:text-6xl;
+    @apply font-black;
+    @apply text-transparent;
+    @apply bg-clip-text;
+    @apply bg-gradient-to-r;
+    @apply from-game-accent;
+    @apply to-game-secondary;
+    @apply animate-pulse-slow;
+    text-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+  }
+
+  .canvas-container {
+    @apply relative;
+    @apply rounded-xl;
+    @apply overflow-hidden;
+    @apply shadow-2xl;
+    @apply border-2;
+    @apply border-game-accent/30;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, $primary-green, transparent, $secondary-pink, transparent, $primary-green);
+      border-radius: inherit;
+      z-index: -1;
+      animation: rotate 3s linear infinite;
+    }
+  }
+
+  .status-indicator {
+    @apply px-4;
+    @apply py-2;
+    @apply rounded-full;
+    @apply text-sm;
+    @apply font-bold;
+    @apply border-2;
+    @apply animate-slide-in;
+    
+    &.ready {
+      @apply bg-blue-500/20;
+      @apply border-blue-400;
+      @apply text-blue-300;
+    }
+    
+    &.playing {
+      @apply bg-green-500/20;
+      @apply border-green-400;
+      @apply text-green-300;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    &.paused {
+      @apply bg-yellow-500/20;
+      @apply border-yellow-400;
+      @apply text-yellow-300;
+    }
+    
+    &.game-over {
+      @apply bg-red-500/20;
+      @apply border-red-400;
+      @apply text-red-300;
+    }
+  }
+
+  .control-hint {
+    @apply text-xs;
+    @apply text-gray-400;
+    @apply bg-gray-800/50;
+    @apply px-3;
+    @apply py-1;
+    @apply rounded-full;
+    @apply border;
+    @apply border-gray-600;
+  }
+}
+
+// Utilidades personalizadas
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .border-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+  }
+}
+
+// Animaciones personalizadas
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Efectos responsive
+@media (max-width: 768px) {
+  .game-title {
+    @apply text-3xl;
+  }
+  
+  .btn-game {
+    @apply px-4;
+    @apply py-2;
+    @apply text-xs;
+  }
+  
+  .score-display {
+    @apply text-lg;
+  }
+}
+
+// Scrollbar personalizado
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-green;
+  border-radius: 4px;
+  
+  &:hover {
+    background: lighten($primary-green, 10%);
+  }
+} 
